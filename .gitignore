@@ -1,0 +1,13 @@
+# Python
+__pycache__/
+*.pyc
+
+# Local Data Storage
+data/
+*.duckdb
+*.parquet
+
+# Environments
+env/
+venv/
+.venv/
