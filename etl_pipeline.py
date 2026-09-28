@@ -90,12 +90,24 @@ def fetch_and_load_ticker_data(con, ticker: str):
     
     print(f"[SUCCESS] {len(df_to_insert)} rows inserted for {ticker}.")
 
+def export_gold_parquet(con):
+    # Export Gold dataset to Parquet for GitHub Actions artifact upload
+    con.execute("""
+        COPY (
+            SELECT * FROM bronze_market_data
+        ) TO 'gold_market_analytics.parquet' (FORMAT PARQUET)
+    """)
+    print("[SUCCESS] Gold dataset exported to gold_market_analytics.parquet")
+
 def run_ingestion():
     con = get_db_connection()
     try:
         init_bronze_table(con)
         for ticker in TICKERS:
             fetch_and_load_ticker_data(con, ticker)
+        
+        # Export Gold layer artifact
+        export_gold_parquet(con)
     finally:
         con.close()
 
